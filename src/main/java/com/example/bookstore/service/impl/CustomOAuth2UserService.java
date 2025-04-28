@@ -3,6 +3,8 @@ package com.example.bookstore.service.impl;
 import com.example.bookstore.model.User;
 import com.example.bookstore.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.oauth2.client.userinfo.DefaultOAuth2UserService;
@@ -17,11 +19,17 @@ import java.util.List;
 import java.util.UUID;
 
 @Service
-@RequiredArgsConstructor
 public class CustomOAuth2UserService implements OAuth2UserService<OAuth2UserRequest, OAuth2User> {
 
     private final UserRepository userRepo;
-    private final PasswordEncoder encoder;
+
+    @Lazy
+    @Autowired
+    private PasswordEncoder encoder;
+
+    public CustomOAuth2UserService(UserRepository userRepo) {
+        this.userRepo = userRepo;
+    }
 
     @Override
     public OAuth2User loadUser(OAuth2UserRequest req) throws OAuth2AuthenticationException {

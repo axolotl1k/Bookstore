@@ -2,11 +2,13 @@ package com.example.bookstore.model;
 
 import jakarta.persistence.*;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
 
 @Entity
 @Data
+@NoArgsConstructor
 @Table(name = "users")
 public class User {
     @Id
