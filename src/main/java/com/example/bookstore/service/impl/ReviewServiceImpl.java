@@ -7,7 +7,7 @@ import com.example.bookstore.repository.BookRepository;
 import com.example.bookstore.repository.ReviewRepository;
 import com.example.bookstore.repository.UserRepository;
 import com.example.bookstore.service.ReviewService;
-import com.example.bookstore.service.dto.ReviewDto;
+import com.example.bookstore.dto.ReviewDto;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;

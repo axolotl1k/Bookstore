@@ -1,4 +1,4 @@
-package com.example.bookstore.service.dto;
+package com.example.bookstore.dto;
 
 public record ReviewDto(
         Long bookId,

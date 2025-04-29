@@ -34,4 +34,17 @@ public class Order {
     @OneToMany(mappedBy = "order", cascade = CascadeType.ALL)
     private List<OrderItem> items;
 
+    @Column(nullable = true)
+    private String fullName;
+
+    @Column(nullable = true)
+    private String phone;
+
+    @Column(nullable = true)
+    private String deliveryAddress;
+
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = true)
+    private PaymentMethod paymentMethod;
+
 }
