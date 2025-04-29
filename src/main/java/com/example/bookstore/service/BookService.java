@@ -1,7 +1,7 @@
 package com.example.bookstore.service;
 
-import com.example.bookstore.service.dto.BookDto;
-import com.example.bookstore.service.dto.BookFilterDto;
+import com.example.bookstore.dto.BookDto;
+import com.example.bookstore.dto.BookFilterDto;
 
 import java.util.List;
 

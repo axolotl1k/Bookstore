@@ -1,6 +1,6 @@
 package com.example.bookstore.service;
 
-import com.example.bookstore.service.dto.ReviewDto;
+import com.example.bookstore.dto.ReviewDto;
 import java.util.List;
 
 public interface ReviewService {
