@@ -1,9 +1,11 @@
 package com.example.bookstore.service.impl;
 
+import com.example.bookstore.model.Role;
 import com.example.bookstore.model.User;
 import com.example.bookstore.repository.UserRepository;
 import com.example.bookstore.service.UserService;
 import com.example.bookstore.dto.UserDto;
+import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -11,6 +13,8 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -41,5 +45,18 @@ public class UserServiceImpl implements UserService {
         String username = auth.getName();
         return userRepo.findByUsername(username)
                 .orElseThrow(() -> new UsernameNotFoundException("User '" + username + "' not found"));
+    }
+
+    @Override
+    public List<User> findAllUsers() {
+        return userRepo.findAll();
+    }
+
+    @Override
+    public void updateUserRole(Long userId, Role newRole) {
+        User user = userRepo.findById(userId)
+                .orElseThrow(() -> new EntityNotFoundException("User not found: " + userId));
+        user.setRole(newRole);
+        userRepo.save(user);
     }
 }
