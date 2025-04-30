@@ -1,34 +1,50 @@
-package com.example.bookstore.web;
+package com.example.bookstore.controller;
 
 import com.example.bookstore.dto.OrderDto;
 import com.example.bookstore.dto.OrderStatusResponseDto;
+import com.example.bookstore.dto.CartDto;
+import com.example.bookstore.service.CartService;
 import com.example.bookstore.service.OrderService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-@RestController
-@RequestMapping("/api/orders")
+@Controller
+@RequestMapping("/order")
 @RequiredArgsConstructor
 public class OrderController {
 
+    private final CartService cartService;
     private final OrderService orderService;
 
-    @PostMapping
-    public ResponseEntity<OrderStatusResponseDto> createOrder(@RequestBody OrderDto dto) {
+    @GetMapping("/checkout")
+    public String checkoutForm(Model model) {
+        CartDto cart = cartService.viewCart();
+        model.addAttribute("cart", cart);
+        model.addAttribute("orderDto", new OrderDto("", "", "", null));
+        return "order/checkout";
+    }
+
+    @PostMapping("/checkout")
+    public String createOrder(@ModelAttribute("orderDto") OrderDto dto) {
         OrderStatusResponseDto status = orderService.createOrder(dto);
-        return ResponseEntity.ok(status);
+        return "redirect:/order/status/" + status.orderId();
     }
 
-    @GetMapping("/{orderId}/status")
-    public ResponseEntity<OrderStatusResponseDto> getOrderStatus(@PathVariable Long orderId) {
-        return ResponseEntity.ok(orderService.getOrderStatus(orderId));
+    @GetMapping("/status/{orderId}")
+    public String orderStatus(@PathVariable Long orderId, Model model) {
+        OrderStatusResponseDto status = orderService.getOrderStatus(orderId);
+        model.addAttribute("status", status);
+        return "order/status";
     }
 
-    @GetMapping("/me")
-    public ResponseEntity<List<OrderStatusResponseDto>> listMyOrders() {
-        return ResponseEntity.ok(orderService.listUserOrders());
+    @GetMapping("/history")
+    public String orderHistory(Model model) {
+        List<OrderStatusResponseDto> history = orderService.listUserOrders();
+        model.addAttribute("orders", history);
+        return "order/history";
     }
 }
