@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<body>
+<nav th:fragment="navbar">
+    <ul>
+        <li><a th:href="@{/books}">Каталог</a></li>
+
+        <li sec:authorize="!isAuthenticated()">
+            <a th:href="@{/login}">Увійти</a>
+        </li>
+        <li sec:authorize="!isAuthenticated()">
+            <a th:href="@{/register}">Реєстрація</a>
+        </li>
+
+        <li sec:authorize="isAuthenticated()">
+            <a th:href="@{/account}">Мій акаунт</a>
+        </li>
+        <li sec:authorize="isAuthenticated()">
+            <a th:href="@{/logout}">Вийти</a>
+        </li>
+
+        <li sec:authorize="hasRole('ADMIN')" class="dropdown">
+            <a href="#" class="dropdown-toggle" data-bs-toggle="dropdown">
+                Адмінка <span class="caret"></span>
+            </a>
+            <ul class="dropdown-menu">
+                <li><a th:href="@{/admin/books}">Управління книгами</a></li>
+                <li><a th:href="@{/admin/categories}">Категорії</a></li>
+                <li><a th:href="@{/admin/orders}">Управління замовленнями</a></li>
+                <li><a th:href="@{/admin/users}">Управління користувачами</a></li>
+
+            </ul>
+        </li>
+    </ul>
+</nav>
+</body>
+</html>

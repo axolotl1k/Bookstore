@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <title>Адмін: Замовлення</title>
+  <link rel="stylesheet" href="/css/bootstrap.min.css" />
+</head>
+<body>
+<div th:insert="~{fragments/navbar :: body}"></div>
+
+<div class="container">
+  <h2 class="mb-3">Список замовлень</h2>
+  <table class="table table-hover">
+    <thead>
+    <tr>
+      <th>ID</th><th>Користувач</th><th>Сума</th><th>Статус</th><th>Дії</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="order : ${orders}">
+      <td th:text="${order.id}">1</td>
+      <td th:text="${order.username}">user</td>
+      <td th:text="${order.totalAmount}">500</td>
+      <td>
+        <form th:action="@{|/admin/orders/status/${order.id}|}" method="post" class="d-flex align-items-center">
+          <select class="form-select form-select-sm me-2" name="newStatus">
+            <option th:each="s : ${statuses}"
+                    th:value="${s}"
+                    th:text="${s}"
+                    th:selected="${s} == ${order.status}"></option>
+          </select>
+          <button class="btn btn-sm btn-primary">Оновити</button>
+        </form>
+      </td>
+      <td>
+        <a class="btn btn-sm btn-info" th:href="@{|/admin/orders/${order.id}|}">Деталі</a>
+      </td>
+    </tr>
+    </tbody>
+  </table>
+</div>
+</body>
+</html>

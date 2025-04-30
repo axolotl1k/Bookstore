@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Увійти</title>
+</head>
+<body>
+<div th:insert="~{fragments/navbar :: body}"></div>
+
+<h1>Увійти</h1>
+
+<div th:if="${param.error}">
+    <p style="color:red;">Невірне ім'я користувача чи пароль</p>
+</div>
+<div th:if="${param.logout}">
+    <p>Ви успішно вийшли</p>
+</div>
+<div th:if="${param.registered}">
+    <p>Реєстрація пройшла успішно. Будь ласка, увійдіть.</p>
+</div>
+
+<form th:action="@{/login}" method="post">
+    <label>
+        Логін:
+        <input type="text" name="username"/>
+    </label>
+    <br/>
+    <label>
+        Пароль:
+        <input type="password" name="password"/>
+    </label>
+    <br/>
+    <button type="submit">Увійти</button>
+</form>
+
+<p>або</p>
+
+<a th:href="@{/oauth2/authorization/github}">
+    <button type="button">Увійти через GitHub</button>
+</a>
+
+<p>
+    Немає акаунту? <a th:href="@{/register}">Зареєструватися</a>
+</p>
+</body>
+</html>

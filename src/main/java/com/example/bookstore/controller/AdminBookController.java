@@ -2,7 +2,9 @@ package com.example.bookstore.controller;
 
 import com.example.bookstore.dto.BookDto;
 import com.example.bookstore.dto.BookFilterDto;
+import com.example.bookstore.dto.CategoryDto;
 import com.example.bookstore.service.BookService;
+import com.example.bookstore.service.CategoryService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
@@ -10,12 +12,20 @@ import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @Controller
 @RequestMapping("/admin/books")
 @RequiredArgsConstructor
 public class AdminBookController {
 
     private final BookService bookService;
+    private final CategoryService categoryService;
+
+    @ModelAttribute("categories")
+    public List<CategoryDto> categories() {
+        return categoryService.findAll();
+    }
 
     @GetMapping
     public String list(Model model) {

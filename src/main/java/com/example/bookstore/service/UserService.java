@@ -9,6 +9,7 @@ import java.util.List;
 public interface UserService {
     void register(UserDto dto);
     User getCurrentUser();
+    void deleteCurrentUser();
     List<User> findAllUsers();
     void updateUserRole(Long userId, Role newRole);
 }

@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <title>Змінити роль</title>
+  <link rel="stylesheet" href="/css/bootstrap.min.css" />
+</head>
+<body>
+<div class="container mt-4">
+  <h2>Редагування користувача</h2>
+  <form th:action="@{|/admin/users/edit/${user.id}|}" method="post">
+    <div class="mb-3">
+      <label class="form-label">Ім’я користувача</label>
+      <input type="text" class="form-control" th:value="${user.username}" readonly />
+    </div>
+    <div class="mb-3">
+      <label class="form-label">Email</label>
+      <input type="email" class="form-control" th:value="${user.email}" readonly />
+    </div>
+    <div class="mb-3">
+      <label class="form-label">Роль</label>
+      <select class="form-select" name="role">
+        <option th:each="r : ${roles}"
+                th:value="${r}"
+                th:text="${r}"
+                th:selected="${r} == ${user.role}"></option>
+      </select>
+    </div>
+    <button type="submit" class="btn btn-success">Зберегти</button>
+    <a class="btn btn-secondary" href="/admin/users">Скасувати</a>
+  </form>
+</div>
+</body>
+</html>
