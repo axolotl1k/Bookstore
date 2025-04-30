@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <title>Адмін: Користувачі</title>
+  <link rel="stylesheet" href="/css/bootstrap.min.css" />
+</head>
+<body>
+<div th:insert="~{fragments/navbar :: body}"></div>
+
+<div class="container">
+  <h2 class="mb-3">Список користувачів</h2>
+  <table class="table table-bordered">
+    <thead>
+    <tr>
+      <th>ID</th><th>Ім’я</th><th>Email</th><th>Роль</th><th>Дії</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="user : ${users}">
+      <td th:text="${user.id}">1</td>
+      <td th:text="${user.username}">user</td>
+      <td th:text="${user.email}">user@mail.com</td>
+      <td th:text="${user.role}">USER</td>
+      <td>
+        <a class="btn btn-sm btn-secondary"
+           th:href="@{|/admin/users/edit/${user.id}|}">Змінити роль</a>
+      </td>
+    </tr>
+    </tbody>
+  </table>
+</div>

@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8"/>
+    <title th:text="'Книга: ' + ${book.title}">Деталі книги</title>
+</head>
+<body>
+
+<div th:insert="~{fragments/navbar :: body}"></div>
+
+<h1 th:text="${book.title}">Назва книги</h1>
+<p><strong>Автор:</strong> <span th:text="${book.author}">Автор</span></p>
+<p><strong>Категорія:</strong> <span th:text="${book.category}">Категорія</span></p>
+<p><strong>Ціна:</strong> <span th:text="${book.price}">Ціна</span></p>
+<p><strong>Наявність:</strong> <span th:text="${book.stock}">Кількість</span></p>
+
+<h2>Опис</h2>
+<p th:if="${book.description}" th:text="${book.description}">Тут має бути опис книги</p>
+<p th:if="${book.description == null || #strings.isEmpty(book.description)}">
+    Опис відсутній.
+</p>
+
+<p><a th:href="@{/books}">← Повернутись до каталогу</a></p>
+</body>
+</html>

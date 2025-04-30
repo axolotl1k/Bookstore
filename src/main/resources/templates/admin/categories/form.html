@@ -1,0 +1,25 @@
+<!--/* @thymesVar name="categoryDto" type="com.example.bookstore.dto.CategoryDto" */-->
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8"/>
+  <title>Нова категорія</title>
+  <link rel="stylesheet" href="/css/bootstrap.min.css"/>
+</head>
+<body>
+<div class="container mt-4">
+  <h2>Нова категорія</h2>
+  <form th:action="@{/admin/categories/create}"
+        th:object="${categoryDto}"
+        method="post">
+    <div class="mb-3">
+      <label class="form-label">Назва</label>
+      <input type="text" class="form-control" th:field="*{name}" />
+      <div class="text-danger" th:errors="*{name}"></div>
+    </div>
+    <button class="btn btn-success">Зберегти</button>
+    <a class="btn btn-secondary" th:href="@{/admin/categories}">Скасувати</a>
+  </form>
+</div>
+</body>
+</html>

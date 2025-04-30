@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8"/>
+  <title>Категорії</title>
+  <link rel="stylesheet" href="/css/bootstrap.min.css"/>
+</head>
+<body>
+<div th:insert="~{fragments/navbar :: body}"></div>
+
+<div class="container mt-4">
+  <h2>Категорії</h2>
+  <a class="btn btn-primary mb-3" th:href="@{/admin/categories/create}">
+    Додати категорію
+  </a>
+  <table class="table">
+    <thead>
+    <tr><th>ID</th><th>Назва</th><th>Дії</th></tr>
+    </thead>
+    <tbody>
+    <tr th:each="c : ${categories}">
+      <td th:text="${c.id}">1</td>
+      <td th:text="${c.name}">Фентезі</td>
+      <td>
+        <form th:action="@{/admin/categories/delete/{id}(id=${c.id})}"
+              method="post" style="display:inline">
+          <button type="submit"
+                  class="btn btn-danger btn-sm"
+                  onclick="return confirm('Видалити категорію?');">
+            Видалити
+          </button>
+        </form>
+      </td>
+    </tr>
+    </tbody>
+  </table>
+</div>
+</body>
+</html>

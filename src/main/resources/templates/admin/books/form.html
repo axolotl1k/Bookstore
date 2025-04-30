@@ -1,0 +1,90 @@
+<!--/* @thymesVar name="bookDto" type="com.example.bookstore.dto.BookDto" */-->
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8"/>
+    <title th:text="${bookDto.id == null}
+                  ? 'Створити книгу'
+                  : 'Редагувати книгу'">
+        Форма книги
+    </title>
+    <link rel="stylesheet" href="/css/bootstrap.min.css"/>
+</head>
+<body>
+<div class="container mt-4" th:object="${bookDto}">
+
+    <h2 th:text="${bookDto.id == null}
+                ? 'Нова книга'
+                : 'Редагування книги'">
+        Форма
+    </h2>
+
+    <form th:action="|/admin/books/${bookDto.id == null
+                                   ? 'create'
+                                   : 'edit/' + bookDto.id}|"
+          method="post">
+
+        <div th:if="${#fields.hasErrors()}" class="alert alert-danger">
+            <ul>
+                <li th:each="err : ${#fields.errors('*')}"
+                    th:text="${err}">Помилка</li>
+            </ul>
+        </div>
+
+        <div class="mb-3">
+            <label class="form-label">Назва</label>
+            <input type="text" class="form-control" th:field="*{title}" />
+            <div class="text-danger"
+                 th:if="${#fields.hasErrors('title')}"
+                 th:errors="*{title}">Невірна назва</div>
+        </div>
+
+        <div class="mb-3">
+            <label class="form-label">Автор</label>
+            <input type="text" class="form-control" th:field="*{author}" />
+            <div class="text-danger"
+                 th:if="${#fields.hasErrors('author')}"
+                 th:errors="*{author}">Невірний автор</div>
+        </div>
+
+        <div class="mb-3">
+            <label class="form-label">Опис</label>
+            <textarea class="form-control" th:field="*{description}"></textarea>
+        </div>
+
+        <div class="mb-3">
+            <label class="form-label">Ціна</label>
+            <input type="number" class="form-control" th:field="*{price}" step="0.01"  min="0" />
+            <div class="text-danger"
+                 th:if="${#fields.hasErrors('price')}"
+                 th:errors="*{price}">Невірна ціна</div>
+        </div>
+        <div class="mb-3">
+            <label class="form-label">Кількість</label>
+            <input type="number" class="form-control"
+                   th:field="*{stock}" min="0" />
+            <div class="text-danger"
+                 th:if="${#fields.hasErrors('stock')}"
+                 th:errors="*{stock}">Невірна кількість</div>
+        </div>
+        <div class="mb-3">
+            <label class="form-label">Категорія</label>
+            <select class="form-select" th:field="*{category}">
+                <option value="" disabled>Оберіть категорію</option>
+                <option th:each="c : ${categories}"
+                        th:value="${c.name}"
+                        th:text="${c.name}">
+                </option>
+            </select>
+            <div class="text-danger"
+                 th:if="${#fields.hasErrors('category')}"
+                 th:errors="*{category}">Вкажіть категорію</div>
+        </div>
+
+        <button type="submit" class="btn btn-success">Зберегти</button>
+        <a class="btn btn-secondary" th:href="@{/admin/books}">Скасувати</a>
+    </form>
+
+</div>
+</body>
+</html>

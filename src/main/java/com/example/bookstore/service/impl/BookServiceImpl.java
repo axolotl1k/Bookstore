@@ -24,14 +24,21 @@ public class BookServiceImpl implements BookService {
     public List<BookDto> findByFilter(BookFilterDto f) {
         Specification<Book> spec = Specification.where(null);
 
-        if (f.author() != null)
-            spec = spec.and(BookSpecifications.hasAuthor(f.author()));
-        if (f.title() != null)
+        if (f.title() != null && !f.title().isBlank()) {
             spec = spec.and(BookSpecifications.hasTitle(f.title()));
-        if (f.category() != null)
+        }
+        if (f.author() != null && !f.author().isBlank()) {
+            spec = spec.and(BookSpecifications.hasAuthor(f.author()));
+        }
+        if (f.category() != null && !f.category().isBlank()) {
             spec = spec.and(BookSpecifications.inCategory(f.category()));
-        if (f.minPrice() != null && f.maxPrice() != null)
-            spec = spec.and(BookSpecifications.priceBetween(f.minPrice(), f.maxPrice()));
+        }
+        if (f.minPrice() != null) {
+            spec = spec.and(BookSpecifications.priceGreaterOrEqual(f.minPrice()));
+        }
+        if (f.maxPrice() != null) {
+            spec = spec.and(BookSpecifications.priceLessOrEqual(f.maxPrice()));
+        }
 
         List<Book> books = bookRepo.findAll(spec);
         return books.stream().map(this::toDto).toList();

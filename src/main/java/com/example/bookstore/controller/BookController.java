@@ -3,6 +3,7 @@ package com.example.bookstore.controller;
 import com.example.bookstore.dto.BookDto;
 import com.example.bookstore.dto.BookFilterDto;
 import com.example.bookstore.service.BookService;
+import com.example.bookstore.service.CategoryService;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
@@ -10,7 +11,6 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import java.math.BigDecimal;
-import java.util.List;
 
 @Controller
 @RequestMapping("/books")
@@ -18,6 +18,7 @@ import java.util.List;
 public class BookController {
 
     private final BookService bookService;
+    private final CategoryService categoryService;
 
     @GetMapping
     public String list(
@@ -28,10 +29,10 @@ public class BookController {
             @RequestParam(value = "maxPrice", required = false) BigDecimal maxPrice,
             Model model
     ) {
-        BookFilterDto filter = new BookFilterDto(author, title, category, minPrice, maxPrice);
-        List<BookDto> books = bookService.findByFilter(filter);
-        model.addAttribute("books", books);
+        BookFilterDto filter = new BookFilterDto(title, author, category, minPrice, maxPrice);
+        model.addAttribute("books", bookService.findByFilter(filter));
         model.addAttribute("filter", filter);
+        model.addAttribute("categories", categoryService.findAll());
         return "books/list";
     }
 
