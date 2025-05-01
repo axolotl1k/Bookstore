@@ -1,6 +1,7 @@
 package com.example.bookstore.service;
 
 import com.example.bookstore.dto.UserDto;
+import com.example.bookstore.dto.UserEditDto;
 import com.example.bookstore.model.Role;
 import com.example.bookstore.model.User;
 
@@ -12,4 +13,5 @@ public interface UserService {
     void deleteCurrentUser();
     List<User> findAllUsers();
     void updateUserRole(Long userId, Role newRole);
+    void updateCurrentUser(UserEditDto updated);
 }

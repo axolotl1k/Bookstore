@@ -4,18 +4,24 @@
   <meta charset="UTF-8"/>
   <title>Категорії</title>
   <link rel="stylesheet" href="/css/bootstrap.min.css"/>
+  <link rel="stylesheet" href="/css/style.css" />
 </head>
 <body>
 <div th:insert="~{fragments/navbar :: body}"></div>
 
-<div class="container mt-4">
-  <h2>Категорії</h2>
-  <a class="btn btn-primary mb-3" th:href="@{/admin/categories/create}">
-    Додати категорію
-  </a>
-  <table class="table">
-    <thead>
-    <tr><th>ID</th><th>Назва</th><th>Дії</th></tr>
+<div class="container mt-5">
+  <div class="d-flex justify-content-between align-items-center mb-4">
+    <h2 class="mb-0">Категорії</h2>
+    <a class="btn btn-primary" th:href="@{/admin/categories/create}">Додати категорію</a>
+  </div>
+
+  <table class="table table-striped table-bordered">
+    <thead class="table-light">
+    <tr>
+      <th>ID</th>
+      <th>Назва</th>
+      <th>Дії</th>
+    </tr>
     </thead>
     <tbody>
     <tr th:each="c : ${categories}">
@@ -23,9 +29,9 @@
       <td th:text="${c.name}">Фентезі</td>
       <td>
         <form th:action="@{/admin/categories/delete/{id}(id=${c.id})}"
-              method="post" style="display:inline">
+              method="post" class="d-inline">
           <button type="submit"
-                  class="btn btn-danger btn-sm"
+                  class="btn btn-sm btn-danger"
                   onclick="return confirm('Видалити категорію?');">
             Видалити
           </button>

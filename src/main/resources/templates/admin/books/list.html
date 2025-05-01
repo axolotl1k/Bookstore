@@ -1,21 +1,30 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
+  <meta charset="UTF-8" />
   <title>Адмін: Книги</title>
   <link rel="stylesheet" href="/css/bootstrap.min.css" />
+  <link rel="stylesheet" href="/css/style.css" />
 </head>
 <body>
 <div th:insert="~{fragments/navbar :: body}"></div>
 
-<div class="container">
-  <div class="d-flex justify-content-between align-items-center mb-3">
+<div class="container mt-5">
+  <div class="d-flex justify-content-between align-items-center mb-4">
     <h2>Список книг</h2>
     <a class="btn btn-primary" th:href="@{/admin/books/create}">Створити книгу</a>
   </div>
-  <table class="table table-striped">
-    <thead>
+
+  <table class="table table-striped table-bordered">
+    <thead class="table-light">
     <tr>
-      <th>ID</th><th>Назва</th><th>Автор</th><th>Ціна</th><th>Дії</th>
+      <th>ID</th>
+      <th>Назва</th>
+      <th>Автор</th>
+      <th>Категорія</th>
+      <th>Кількість</th>
+      <th>Ціна</th>
+      <th>Дії</th>
     </tr>
     </thead>
     <tbody>
@@ -23,12 +32,14 @@
       <td th:text="${book.id}">1</td>
       <td th:text="${book.title}">Назва</td>
       <td th:text="${book.author}">Автор</td>
+      <td th:text="${book.category}">Категорія</td>
+      <td th:text="${book.stock}">Кількість</td>
       <td th:text="${book.price}">100</td>
-      <td>
-        <a class="btn btn-sm btn-secondary"
+      <td class="d-flex gap-2">
+        <a class="btn btn-sm btn-outline-primary"
            th:href="@{|/admin/books/edit/${book.id}|}">Редагувати</a>
-        <form th:action="@{|/admin/books/delete/${book.id}|}" method="post" th:object="${book}"
-              style="display:inline">
+
+        <form th:action="@{|/admin/books/delete/${book.id}|}" method="post" th:object="${book}">
           <button type="submit" class="btn btn-sm btn-danger"
                   onclick="return confirm('Видалити книгу?');">
             Видалити

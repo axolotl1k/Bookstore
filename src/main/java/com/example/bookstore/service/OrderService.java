@@ -1,5 +1,6 @@
 package com.example.bookstore.service;
 
+import com.example.bookstore.dto.AdminOrderDetailsDto;
 import com.example.bookstore.dto.OrderDto;
 import com.example.bookstore.dto.OrderResponseDto;
 import com.example.bookstore.dto.OrderStatusResponseDto;
@@ -13,4 +14,7 @@ public interface OrderService {
     List<OrderStatusResponseDto> listUserOrders();
     List<OrderResponseDto> listAllOrders();
     void updateOrderStatus(Long orderId, OrderStatus newStatus);
+    AdminOrderDetailsDto getAdminOrderDetails(Long orderId);
+    OrderResponseDto getUserOrderDetails(Long orderId);
+    void deleteOrder(Long orderId);
 }

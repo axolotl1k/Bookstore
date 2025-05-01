@@ -1,25 +1,58 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <head>
     <meta charset="UTF-8"/>
     <title th:text="'Книга: ' + ${book.title}">Деталі книги</title>
+    <link rel="stylesheet" href="/css/bootstrap.min.css"/>
+    <link rel="stylesheet" href="/css/style.css" />
 </head>
 <body>
-
 <div th:insert="~{fragments/navbar :: body}"></div>
 
-<h1 th:text="${book.title}">Назва книги</h1>
-<p><strong>Автор:</strong> <span th:text="${book.author}">Автор</span></p>
-<p><strong>Категорія:</strong> <span th:text="${book.category}">Категорія</span></p>
-<p><strong>Ціна:</strong> <span th:text="${book.price}">Ціна</span></p>
-<p><strong>Наявність:</strong> <span th:text="${book.stock}">Кількість</span></p>
+<div class="container mt-5" style="max-width: 700px;">
+    <h2 th:text="${book.title}" class="mb-3">Назва книги</h2>
 
-<h2>Опис</h2>
-<p th:if="${book.description}" th:text="${book.description}">Тут має бути опис книги</p>
-<p th:if="${book.description == null || #strings.isEmpty(book.description)}">
-    Опис відсутній.
-</p>
+    <ul class="list-group mb-3">
+        <li class="list-group-item">
+            <strong>Автор:</strong> <span th:text="${book.author}">Автор</span>
+        </li>
+        <li class="list-group-item">
+            <strong>Категорія:</strong> <span th:text="${book.category}">Категорія</span>
+        </li>
+        <li class="list-group-item">
+            <strong>Ціна:</strong> <span th:text="${book.price}">Ціна</span> грн
+        </li>
+        <li class="list-group-item">
+            <strong>Наявність:</strong> <span th:text="${book.stock}">Кількість</span>
+        </li>
+    </ul>
 
-<p><a th:href="@{/books}">← Повернутись до каталогу</a></p>
+    <div class="mb-4">
+        <form th:action="@{/cart/add/{bookId}(bookId=${book.id})}"
+              method="post"
+              sec:authorize="isAuthenticated()"
+              th:if="${book.stock > 0}">
+            <button type="submit" class="btn btn-success">Додати в кошик</button>
+        </form>
+
+        <p th:if="${book.stock == 0}" class="text-muted">Немає в наявності</p>
+    </div>
+
+    <h4>Опис</h4>
+    <p th:if="${book.description}" th:text="${book.description}">Тут має бути опис книги</p>
+    <p th:if="${book.description == null || #strings.isEmpty(book.description)}" class="text-muted">
+        Опис відсутній.
+    </p>
+
+    <div class="d-flex gap-2 mt-4">
+        <a th:href="@{/reviews/book/{bookId}(bookId=${book.id})}" class="btn btn-outline-primary">
+            Переглянути відгуки
+        </a>
+        <a th:href="@{/books}" class="btn btn-secondary">
+            ← Повернутись до каталогу
+        </a>
+    </div>
+</div>
 </body>
 </html>

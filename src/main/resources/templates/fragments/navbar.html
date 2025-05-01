@@ -2,37 +2,65 @@
 <html xmlns:th="http://www.thymeleaf.org"
       xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <body>
-<nav th:fragment="navbar">
-    <ul>
-        <li><a th:href="@{/books}">Каталог</a></li>
+<nav th:fragment="navbar" class="navbar navbar-expand-lg navbar-dark" style="background-color: #4a3f35;">
+    <div class="container-fluid">
+        <a class="navbar-brand" th:href="@{/}">Книгарня</a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
+                data-bs-target="#navbarNav" aria-controls="navbarNav"
+                aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
 
-        <li sec:authorize="!isAuthenticated()">
-            <a th:href="@{/login}">Увійти</a>
-        </li>
-        <li sec:authorize="!isAuthenticated()">
-            <a th:href="@{/register}">Реєстрація</a>
-        </li>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav me-auto mb-2 mb-lg-0">
 
-        <li sec:authorize="isAuthenticated()">
-            <a th:href="@{/account}">Мій акаунт</a>
-        </li>
-        <li sec:authorize="isAuthenticated()">
-            <a th:href="@{/logout}">Вийти</a>
-        </li>
+                <li class="nav-item" sec:authorize="isAuthenticated()">
+                    <a class="nav-link" th:href="@{/account}">Мій акаунт</a>
+                </li>
 
-        <li sec:authorize="hasRole('ADMIN')" class="dropdown">
-            <a href="#" class="dropdown-toggle" data-bs-toggle="dropdown">
-                Адмінка <span class="caret"></span>
-            </a>
-            <ul class="dropdown-menu">
-                <li><a th:href="@{/admin/books}">Управління книгами</a></li>
-                <li><a th:href="@{/admin/categories}">Категорії</a></li>
-                <li><a th:href="@{/admin/orders}">Управління замовленнями</a></li>
-                <li><a th:href="@{/admin/users}">Управління користувачами</a></li>
+                <li class="nav-item" sec:authorize="isAuthenticated()">
+                    <a class="nav-link" th:href="@{/books}">Каталог</a>
+                </li>
+
+                <li class="nav-item" sec:authorize="isAuthenticated()">
+                    <a class="nav-link" th:href="@{/cart}">Кошик</a>
+                </li>
+
+                <li class="nav-item" sec:authorize="!isAuthenticated()">
+                    <a class="nav-link" th:href="@{/login}">Увійти</a>
+                </li>
+
+                <li class="nav-item" sec:authorize="!isAuthenticated()">
+                    <a class="nav-link" th:href="@{/register}">Реєстрація</a>
+                </li>
+
+                <li class="nav-item" sec:authorize="isAuthenticated()">
+                    <a class="nav-link" th:href="@{/logout}">Вийти</a>
+                </li>
+
+                <li class="nav-item" sec:authorize="hasRole('ADMIN')">
+                    <span class="nav-link disabled">| Адміністративні функції >></span>
+                </li>
+
+                <li class="nav-item" sec:authorize="hasRole('ADMIN')">
+                    <a class="nav-link" th:href="@{/admin/books}">Управління книгами</a>
+                </li>
+
+                <li class="nav-item" sec:authorize="hasRole('ADMIN')">
+                    <a class="nav-link" th:href="@{/admin/categories}">Управління категоріями</a>
+                </li>
+
+                <li class="nav-item" sec:authorize="hasRole('ADMIN')">
+                    <a class="nav-link" th:href="@{/admin/orders}">Управління замовленнями</a>
+                </li>
+
+                <li class="nav-item" sec:authorize="hasRole('ADMIN')">
+                    <a class="nav-link" th:href="@{/admin/users}">Управління користувачами</a>
+                </li>
 
             </ul>
-        </li>
-    </ul>
+        </div>
+    </div>
 </nav>
 </body>
 </html>

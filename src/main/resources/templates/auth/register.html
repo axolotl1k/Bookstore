@@ -3,44 +3,39 @@
 <head>
   <meta charset="UTF-8">
   <title>Реєстрація</title>
+  <link rel="stylesheet" href="/css/bootstrap.min.css" />
+  <link rel="stylesheet" href="/css/style.css" />
 </head>
 <body>
 <div th:insert="~{fragments/navbar :: body}"></div>
 
-<h1>Реєстрація</h1>
+<div class="container mt-5" style="max-width: 500px;">
+  <h2 class="mb-4 text-center">Реєстрація</h2>
 
-<form th:action="@{/register}"
-      th:object="${userDto}"
-      method="post">
-  <label>
-    Ім'я користувача:
-    <input type="text" th:field="*{username}" />
-  </label>
-  <div th:if="${#fields.hasErrors('username')}"
-       th:errors="*{username}"></div>
-  <br/>
+  <form th:action="@{/register}" th:object="${userDto}" method="post">
+    <div class="mb-3">
+      <label class="form-label">Ім'я користувача</label>
+      <input type="text" class="form-control" th:field="*{username}" />
+      <div class="text-danger" th:errors="*{username}"></div>
+    </div>
 
-  <label>
-    Пароль:
-    <input type="password" th:field="*{password}" />
-  </label>
-  <div th:if="${#fields.hasErrors('password')}"
-       th:errors="*{password}"></div>
-  <br/>
+    <div class="mb-3">
+      <label class="form-label">Пароль</label>
+      <input type="password" class="form-control" th:field="*{password}" />
+      <div class="text-danger" th:errors="*{password}"></div>
+    </div>
 
-  <label>
-    Email:
-    <input type="email" th:field="*{email}" />
-  </label>
-  <div th:if="${#fields.hasErrors('email')}"
-       th:errors="*{email}"></div>
-  <br/>
+    <div class="mb-3">
+      <label class="form-label">Email</label>
+      <input type="email" class="form-control" th:field="*{email}" />
+      <div class="text-danger" th:errors="*{email}"></div>
+    </div>
 
-  <button type="submit">Зареєструватися</button>
-</form>
-
-<p>
-  Вже є акаунт? <a th:href="@{/login}">Увійти</a>
-</p>
+    <div class="d-flex gap-2">
+      <button type="submit" class="btn btn-primary">Зареєструватися</button>
+      <a th:href="@{/login}" class="btn btn-outline-secondary">Увійти</a>
+    </div>
+  </form>
+</div>
 </body>
 </html>

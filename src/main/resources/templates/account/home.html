@@ -3,48 +3,52 @@
 <head>
     <meta charset="UTF-8" />
     <title>Мій акаунт</title>
+    <link rel="stylesheet" href="/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="/css/style.css" />
 </head>
 <body>
 <div th:insert="~{fragments/navbar :: body}"></div>
 
-<h1>Мій акаунт</h1>
+<div class="container mt-5" style="max-width: 700px;">
+    <h1 class="mb-4">Мій акаунт</h1>
 
-<section>
-    <h2>Профіль</h2>
-    <p><strong>Ім’я користувача:</strong> <span th:text="${user.username}">username</span></p>
-    <p><strong>Email:</strong> <span th:text="${user.email}">email</span></p>
+    <section class="mb-5">
+        <h2>Профіль</h2>
+        <div class="mb-3">
+            <p><strong>Ім’я користувача:</strong> <span th:text="${user.username}">username</span></p>
+            <p><strong>Email:</strong> <span th:text="${user.email}">email</span></p>
+        </div>
+        <div class="d-flex gap-2">
+            <a class="btn btn-primary" th:href="@{/account/edit}">Редагувати профіль</a>
+            <form th:action="@{/account/delete}" method="post"
+                  onsubmit="return confirm('Ви справді хочете видалити акаунт?');">
+                <button type="submit" class="btn btn-danger">Видалити акаунт</button>
+            </form>
+        </div>
+    </section>
 
-    <form th:action="@{/account/delete}" method="post"
-          sec:authorize="isAuthenticated()"
-          onsubmit="return confirm('Ви справді хочете видалити акаунт?');">
-        <button type="submit">Видалити акаунт</button>
-    </form>
-</section>
-
-<!-- Історія замовлень -->
-<section>
-    <h2>Історія замовлень</h2>
-    <table>
-        <thead>
-        <tr>
-            <th>№</th>
-            <th>Статус</th>
-            <th>Деталі</th>
-        </tr>
-        </thead>
-        <tbody>
-        <tr th:each="o : ${orders}">
-            <td th:text="${o.orderId}">1</td>
-            <td th:text="${o.status}">NEW</td>
-            <td>
-                <a th:href="@{/order/status/{id}(id=${o.orderId})}">Переглянути</a>
-            </td>
-        </tr>
-        <tr th:if="${#lists.isEmpty(orders)}">
-            <td colspan="3">Замовлень ще не було</td>
-        </tr>
-        </tbody>
-    </table>
-</section>
+    <section>
+        <h2>Історія замовлень</h2>
+        <table class="table table-striped mt-3">
+            <thead>
+            <tr>
+                <th>№</th>
+                <th>Статус</th>
+                <th>Деталі</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="o : ${orders}">
+                <td th:text="${o.orderId}">1</td>
+                <td th:text="${o.status}">NEW</td>
+                <td><a th:href="@{/order/status/{id}(id=${o.orderId})}">Переглянути</a></td>
+            </tr>
+            <tr th:if="${#lists.isEmpty(orders)}">
+                <td colspan="3">Замовлень ще не було</td>
+            </tr>
+            </tbody>
+        </table>
+    </section>
+</div>
 </body>
 </html>

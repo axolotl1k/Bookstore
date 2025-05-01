@@ -17,7 +17,7 @@ public class CustomUserDetailsService implements UserDetailsService {
         var user = userRepo.findByUsername(username)
                 .orElseThrow(() -> new UsernameNotFoundException(username));
         return User.withUsername(user.getUsername())
-                .password(user.getPassword())      // уже закодований BCrypt
+                .password(user.getPassword())
                 .roles(user.getRole().name())
                 .build();
     }

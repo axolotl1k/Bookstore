@@ -1,7 +1,13 @@
 package com.example.bookstore.service.impl;
 
+import com.example.bookstore.dto.UserEditDto;
+import com.example.bookstore.model.Order;
+import com.example.bookstore.model.Review;
 import com.example.bookstore.model.Role;
 import com.example.bookstore.model.User;
+import com.example.bookstore.repository.OrderItemRepository;
+import com.example.bookstore.repository.OrderRepository;
+import com.example.bookstore.repository.ReviewRepository;
 import com.example.bookstore.repository.UserRepository;
 import com.example.bookstore.service.UserService;
 import com.example.bookstore.dto.UserDto;
@@ -23,6 +29,10 @@ import java.util.List;
 @RequiredArgsConstructor
 public class UserServiceImpl implements UserService {
     private final UserRepository userRepo;
+    private final ReviewRepository reviewRepo;
+    private final OrderRepository orderRepo;
+    private final OrderItemRepository orderItemRepo;
+
     private final PasswordEncoder encoder;
 
     @Override
@@ -68,7 +78,21 @@ public class UserServiceImpl implements UserService {
     public void deleteCurrentUser() {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         String username = auth.getName();
-        userRepo.deleteByUsername(username);
+
+        User user = userRepo.findByUsername(username)
+                .orElseThrow(() -> new EntityNotFoundException("Користувача не знайдено: " + username));
+
+        List<Review> reviews = reviewRepo.findAllByUser(user);
+        reviewRepo.deleteAll(reviews);
+
+        List<Order> orders = orderRepo.findAllByUser(user);
+        for (Order order : orders) {
+            orderItemRepo.deleteAll(order.getItems());
+        }
+        orderRepo.deleteAll(orders);
+
+        userRepo.delete(user);
+
         SecurityContextHolder.clearContext();
     }
 
@@ -82,6 +106,17 @@ public class UserServiceImpl implements UserService {
         User user = userRepo.findById(userId)
                 .orElseThrow(() -> new EntityNotFoundException("User not found: " + userId));
         user.setRole(newRole);
+        userRepo.save(user);
+    }
+
+    @Override
+    public void updateCurrentUser(UserEditDto updated) {
+        User user = getCurrentUser();
+        user.setUsername(updated.username());
+        user.setEmail(updated.email());
+        if (!updated.password().isBlank()) {
+            user.setPassword(encoder.encode(updated.password()));
+        }
         userRepo.save(user);
     }
 }

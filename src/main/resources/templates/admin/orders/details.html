@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Деталі замовлення</title>
+    <link rel="stylesheet" href="/css/bootstrap.min.css"/>
+    <link rel="stylesheet" href="/css/style.css" />
+</head>
+<body>
+<div th:insert="~{fragments/navbar :: body}"></div>
+
+<div class="container mt-5" style="max-width: 800px;">
+    <h2 class="mb-4">Замовлення №<span th:text="${order.orderId}">1</span></h2>
+
+    <div class="mb-4">
+        <p><strong>Ім'я користувача:</strong> <span th:text="${order.userFullName}">Ім'я</span></p>
+        <p><strong>Адреса доставки:</strong> <span th:text="${order.deliveryAddress}">Адреса</span></p>
+        <p><strong>Телефон:</strong> <span th:text="${order.phone}">Телефон</span></p>
+        <p><strong>Метод оплати:</strong> <span th:text="${order.paymentMethod}">Метод</span></p>
+        <p><strong>Статус:</strong> <span th:text="${order.status}">Статус</span></p>
+    </div>
+
+    <h4 class="mb-3">Товари</h4>
+    <table class="table table-bordered">
+        <thead class="table-light">
+        <tr>
+            <th>Книга</th>
+            <th>Кількість</th>
+            <th>Ціна</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="item : ${order.items}">
+            <td th:text="${item.title}">Назва</td>
+            <td th:text="${item.quantity}">1</td>
+            <td th:text="${item.unitPrice}">100</td>
+        </tr>
+        </tbody>
+    </table>
+
+    <p class="fw-bold mt-3">Загальна сума: <span th:text="${order.totalPrice}">0.00</span> грн</p>
+
+    <a th:href="@{/admin/orders}" class="btn btn-secondary mt-3">← Назад до списку</a>
+</div>
+</body>
+</html>

@@ -1,13 +1,12 @@
 package com.example.bookstore.service.impl;
 
-import com.example.bookstore.dto.OrderDto;
-import com.example.bookstore.dto.OrderItemDto;
-import com.example.bookstore.dto.OrderResponseDto;
-import com.example.bookstore.dto.OrderStatusResponseDto;
+import com.example.bookstore.dto.*;
+import com.example.bookstore.model.OrderItem;
 import com.example.bookstore.notification.OrderStatusChangedEvent;
 import com.example.bookstore.model.Order;
 import com.example.bookstore.model.OrderStatus;
 import com.example.bookstore.model.User;
+import com.example.bookstore.repository.OrderItemRepository;
 import com.example.bookstore.repository.OrderRepository;
 import com.example.bookstore.service.CartService;
 import com.example.bookstore.service.OrderService;
@@ -28,6 +27,7 @@ import java.util.stream.Collectors;
 public class OrderServiceImpl implements OrderService {
 
     private final OrderRepository orderRepo;
+    private final OrderItemRepository orderItemRepo;
     private final CartService cartService;
     private final UserService userService;
     private final ApplicationEventPublisher evPublisher;
@@ -40,8 +40,19 @@ public class OrderServiceImpl implements OrderService {
         Order cart = orderRepo.findByUserAndStatus(user, OrderStatus.PENDING)
                 .orElseThrow(() -> new IllegalStateException("Кошик порожній або не знайдений"));
 
-        if (cart.getItems().isEmpty()) {
-            throw new IllegalStateException("Неможливо оформити порожній кошик");
+        for (var item : cart.getItems()) {
+            if (item.getBook() == null) {
+                throw new IllegalStateException("У кошику є книга, яка була видалена");
+            }
+
+            int inStock = item.getBook().getStock();
+            int toBuy = item.getQuantity();
+
+            if (inStock < toBuy) {
+                throw new IllegalStateException("Недостатньо книг: " + item.getBook().getTitle());
+            }
+
+            item.getBook().setStock(inStock - toBuy);
         }
 
         cart.setFullName(dto.fullName());
@@ -69,9 +80,9 @@ public class OrderServiceImpl implements OrderService {
     @Override
     @Transactional(readOnly = true)
     public OrderStatusResponseDto getOrderStatus(Long orderId) {
-        Order o = orderRepo.findById(orderId)
+        Order order = orderRepo.findById(orderId)
                 .orElseThrow(() -> new EntityNotFoundException("Order not found: " + orderId));
-        return new OrderStatusResponseDto(o.getId(), o.getStatus());
+        return new OrderStatusResponseDto(order.getId(), order.getStatus());
     }
 
     @Override
@@ -100,6 +111,19 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
+    @Transactional
+    public void deleteOrder(Long orderId) {
+        Order order = orderRepo.findById(orderId)
+                .orElseThrow(() -> new EntityNotFoundException("Order not found: " + orderId));
+
+        List<OrderItem> orderItems = orderItemRepo.findByOrder(order);
+        for (OrderItem item : orderItems) {
+            item.setBook(null);
+        }
+        orderRepo.delete(order);
+    }
+
+    @Override
     @Transactional(readOnly = true)
     public List<OrderResponseDto> listAllOrders() {
         return orderRepo.findAll().stream()
@@ -110,8 +134,8 @@ public class OrderServiceImpl implements OrderService {
     private OrderResponseDto mapToResponseDto(Order order) {
         List<OrderItemDto> items = order.getItems().stream()
                 .map(i -> new OrderItemDto(
-                        i.getBook().getId(),
-                        i.getBook().getTitle(),
+                        i.getBook() != null ? i.getBook().getId() : null,
+                        i.getBook() != null ? i.getBook().getTitle() : "[Книгу видалено]",
                         i.getPrice(),
                         i.getQuantity(),
                         i.getPrice().multiply(BigDecimal.valueOf(i.getQuantity()))
@@ -120,9 +144,47 @@ public class OrderServiceImpl implements OrderService {
 
         return new OrderResponseDto(
                 order.getId(),
+                order.getUser().getUsername(),
                 order.getStatus(),
                 order.getTotalPrice(),
                 items
         );
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public AdminOrderDetailsDto getAdminOrderDetails(Long orderId) {
+        Order order = orderRepo.findById(orderId)
+                .orElseThrow(() -> new EntityNotFoundException("Order not found: " + orderId));
+
+        List<OrderItemDto> items = order.getItems().stream()
+                .map(i -> new OrderItemDto(
+                        i.getBook() != null ? i.getBook().getId() : null,
+                        i.getBook() != null ? i.getBook().getTitle() : "[Книгу видалено]",
+                        i.getPrice(),
+                        i.getQuantity(),
+                        i.getPrice().multiply(BigDecimal.valueOf(i.getQuantity()))
+                ))
+                .toList();
+
+        return new AdminOrderDetailsDto(
+                order.getId(),
+                order.getUser().getUsername(),
+                order.getUser().getEmail(),
+                order.getStatus(),
+                order.getTotalPrice(),
+                order.getDeliveryAddress(),
+                order.getPhone(),
+                order.getPaymentMethod(),
+                items
+        );
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public OrderResponseDto getUserOrderDetails(Long orderId) {
+        Order order = orderRepo.findById(orderId)
+                .orElseThrow(() -> new EntityNotFoundException("Order not found"));
+        return mapToResponseDto(order);
     }
 }

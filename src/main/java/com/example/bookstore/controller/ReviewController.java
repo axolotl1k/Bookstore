@@ -27,7 +27,8 @@ public class ReviewController {
     ) {
         List<ReviewDto> reviews = reviewService.getReviewsByBookId(bookId);
         model.addAttribute("reviews", reviews);
-        model.addAttribute("reviewDto", new ReviewDto(bookId, null, 0, ""));
+        String me = userService.getCurrentUser().getUsername();
+        model.addAttribute("reviewDto", new ReviewDto(bookId, null, me, 0, ""));
         return "reviews/list";
     }
 
@@ -43,9 +44,11 @@ public class ReviewController {
             return "reviews/list";
         }
         long userId = userService.getCurrentUser().getId();
+        String me = userService.getCurrentUser().getUsername();
         reviewService.addReview(new ReviewDto(
                 bookId,
                 userId,
+                me,
                 dto.rating(),
                 dto.comment()
         ));

@@ -1,7 +1,9 @@
 package com.example.bookstore.service.impl;
 
 import com.example.bookstore.dto.CategoryDto;
+import com.example.bookstore.model.Book;
 import com.example.bookstore.model.Category;
+import com.example.bookstore.repository.BookRepository;
 import com.example.bookstore.repository.CategoryRepository;
 import com.example.bookstore.service.CategoryService;
 import jakarta.persistence.EntityNotFoundException;
@@ -16,6 +18,7 @@ import java.util.List;
 public class CategoryServiceImpl implements CategoryService {
 
     private final CategoryRepository categoryRepo;
+    private final BookRepository bookRepo;
 
     @Override
     public List<CategoryDto> findAll() {
@@ -37,9 +40,26 @@ public class CategoryServiceImpl implements CategoryService {
     @Override
     @Transactional
     public void delete(Long id) {
-        if (!categoryRepo.existsById(id)) {
-            throw new EntityNotFoundException("Категорія не знайдена: " + id);
+        Category categoryToDelete = categoryRepo.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("Категорія не знайдена: " + id));
+
+        if ("Без категорії".equalsIgnoreCase(categoryToDelete.getName())) {
+            throw new IllegalStateException("Не можна видалити категорію 'Без категорії'");
         }
-        categoryRepo.deleteById(id);
+
+        Category fallbackCategory = categoryRepo.findByName("Без категорії")
+                .orElseGet(() -> {
+                    Category fallback = new Category();
+                    fallback.setName("Без категорії");
+                    return categoryRepo.save(fallback);
+                });
+
+        List<Book> books = bookRepo.findAllByCategory(categoryToDelete);
+        for (Book book : books) {
+            book.setCategory(fallbackCategory);
+        }
+        bookRepo.saveAll(books);
+
+        categoryRepo.delete(categoryToDelete);
     }
 }
