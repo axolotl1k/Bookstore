@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <meta charset="UTF-8">
+    <title>Відгуки</title>
+    <link rel="stylesheet" href="/css/bootstrap.min.css"/>
+    <link rel="stylesheet" href="/css/style.css"/>
+</head>
+<body>
+<div th:insert="~{fragments/navbar :: body}"></div>
+
+<div class="container mt-5" style="max-width: 700px;">
+    <h2 class="mb-4">Відгуки до книги</h2>
+
+    <div th:if="${!reviews.isEmpty()}">
+        <div th:each="r : ${reviews}" class="mb-3 border rounded p-3 bg-light">
+            <p class="mb-1">
+                <strong th:text="${r.rating} + '/5'"></strong> від користувача <em th:text="${r.username}">user</em>
+            </p>
+            <p th:text="${r.comment}"></p>
+        </div>
+    </div>
+
+    <div th:if="${reviews.isEmpty()}">
+        <p class="text-muted">Ще немає відгуків. Будьте першим!</p>
+    </div>
+    <h4 class="mt-4">Додати відгук</h4>
+    <form th:action="@{/reviews/book/{bookId}(bookId=${reviewDto.bookId})}"
+          th:object="${reviewDto}"
+          method="post">
+        <div class="mb-3">
+            <label class="form-label">Оцінка</label>
+            <select class="form-select" th:field="*{rating}">
+                <option value="1">1</option>
+                <option value="2">2</option>
+                <option value="3">3</option>
+                <option value="4">4</option>
+                <option value="5">5</option>
+            </select>
+        </div>
+
+        <div class="mb-3">
+            <label class="form-label">Коментар</label>
+            <textarea class="form-control" th:field="*{comment}"></textarea>
+            <div class="text-danger" th:errors="*{comment}"></div>
+        </div>
+
+        <button type="submit" class="btn btn-primary">Надіслати</button>
+    </form>
+
+</div>
+</body>
+</html>

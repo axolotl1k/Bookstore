@@ -18,6 +18,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
+import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
@@ -58,6 +59,7 @@ public class CartServiceImpl implements CartService {
                     oi.setBook(book);
                     oi.setPrice(book.getPrice());
                     oi.setQuantity(0);
+                    cart.getItems().add(oi);
                     return oi;
                 });
 
@@ -72,8 +74,10 @@ public class CartServiceImpl implements CartService {
     @Transactional(readOnly = true)
     public CartDto viewCart() {
         User user = userService.getCurrentUser();
-        Order cart = getOrCreateCartOrder(user);
-        return mapToDto(cart);
+        return orderRepo
+                .findByUserAndStatus(user, OrderStatus.PENDING)
+                .map(this::mapToDto)
+                .orElseGet(() -> new CartDto(List.of(), BigDecimal.ZERO));
     }
 
     @Override
@@ -81,11 +85,8 @@ public class CartServiceImpl implements CartService {
     public void clearCart() {
         User user = userService.getCurrentUser();
         orderRepo.findByUserAndStatus(user, OrderStatus.PENDING).ifPresent(cart -> {
-
             orderItemRepo.deleteAll(cart.getItems());
-            cart.getItems().clear();
-            cart.setTotalPrice(BigDecimal.ZERO);
-            orderRepo.save(cart);
+            orderRepo.delete(cart);
         });
     }
 
@@ -100,8 +101,13 @@ public class CartServiceImpl implements CartService {
                     .ifPresent(item -> {
                         cart.getItems().remove(item);
                         orderItemRepo.delete(item);
-                        recalcTotal(cart);
-                        orderRepo.save(cart);
+
+                        if (cart.getItems().isEmpty()) {
+                            orderRepo.delete(cart);
+                        } else {
+                            recalcTotal(cart);
+                            orderRepo.save(cart);
+                        }
                     });
         });
     }
@@ -122,8 +128,13 @@ public class CartServiceImpl implements CartService {
                             item.setQuantity(quantity);
                             orderItemRepo.save(item);
                         }
-                        recalcTotal(cart);
-                        orderRepo.save(cart);
+
+                        if (cart.getItems().isEmpty()) {
+                            orderRepo.delete(cart);
+                        } else {
+                            recalcTotal(cart);
+                            orderRepo.save(cart);
+                        }
                     });
         });
     }

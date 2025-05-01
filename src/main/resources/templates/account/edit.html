@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8"/>
+    <title>Редагування акаунту</title>
+    <link rel="stylesheet" href="/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="/css/style.css"/>
+</head>
+<body>
+<div th:insert="~{fragments/navbar :: body}"></div>
+
+<div class="container mt-5" style="max-width: 600px;">
+    <h2 class="mb-4">Редагування профілю</h2>
+
+    <form th:action="@{/account/edit}" th:object="${userDto}" method="post">
+        <div class="mb-3">
+            <label class="form-label">Ім’я користувача</label>
+            <input type="text" th:field="*{username}" class="form-control"/>
+            <div class="text-danger" th:errors="*{username}"></div>
+        </div>
+
+        <div class="mb-3">
+            <label class="form-label">Email</label>
+            <input type="email" th:field="*{email}" class="form-control"/>
+            <div class="text-danger" th:errors="*{email}"></div>
+        </div>
+
+        <div class="mb-3">
+            <label class="form-label">Новий пароль <small class="text-muted">(опціонально)</small></label>
+            <input type="password" th:field="*{password}" class="form-control"/>
+            <div class="text-danger" th:errors="*{password}"></div>
+        </div>
+
+        <div class="d-flex gap-2">
+            <button type="submit" class="btn btn-success">Зберегти</button>
+            <a class="btn btn-secondary" th:href="@{/account}">Скасувати</a>
+        </div>
+    </form>
+</div>
+</body>
+</html>

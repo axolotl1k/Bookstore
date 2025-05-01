@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title>Оформлення замовлення</title>
+  <link rel="stylesheet" href="/css/bootstrap.min.css" />
+  <link rel="stylesheet" href="/css/style.css" />
+</head>
+<body>
+<div th:insert="~{fragments/navbar :: navbar}"></div>
+
+<div class="container mt-5" style="max-width: 700px;">
+  <h2 class="mb-4">Оформлення замовлення</h2>
+
+  <form th:action="@{/order/checkout}" method="post">
+    <div class="mb-3">
+      <label class="form-label">Ваше ім’я</label>
+      <input type="text" name="fullName" class="form-control" th:value="${order.fullName}" required/>
+    </div>
+
+    <div class="mb-3">
+      <label class="form-label">Телефон</label>
+      <input type="tel" name="phone" class="form-control" th:value="${order.phone}" required/>
+    </div>
+
+    <div class="mb-3">
+      <label class="form-label">Адреса доставки</label>
+      <input type="text" name="deliveryAddress" class="form-control" th:value="${order.deliveryAddress}" required/>
+    </div>
+
+    <div class="mb-3">
+      <label class="form-label">Метод оплати</label>
+      <select name="paymentMethod" class="form-select" required>
+        <option value="" disabled selected>Оберіть</option>
+        <option th:each="method : ${T(com.example.bookstore.model.PaymentMethod).values()}"
+                th:value="${method}"
+                th:text="${#strings.capitalize(method.name().toLowerCase().replace('_', ' '))}"
+                th:selected="${method == order.paymentMethod}">
+        </option>
+      </select>
+    </div>
+
+    <h4 class="mt-4">Ваш кошик</h4>
+    <table class="table table-bordered">
+      <thead class="table-light">
+      <tr><th>Книга</th><th>К-сть</th><th>Ціна</th></tr>
+      </thead>
+      <tbody>
+      <tr th:each="item: ${cart.items}">
+        <td th:text="${item.title}">Назва</td>
+        <td th:text="${item.quantity}">1</td>
+        <td th:text="${item.subtotal}">100.00</td>
+      </tr>
+      </tbody>
+    </table>
+
+    <p class="fw-bold">Всього: <span th:text="${cart.total}">0.00</span> грн</p>
+
+    <div class="d-flex gap-2 mt-3">
+      <button type="submit" class="btn btn-primary">Підтвердити замовлення</button>
+      <a th:href="@{/cart}" class="btn btn-secondary">Назад</a>
+    </div>
+  </form>
+</div>
+</body>
+</html>

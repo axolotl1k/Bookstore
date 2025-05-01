@@ -19,7 +19,7 @@ public class CartController {
     public String viewCart(Model model) {
         CartDto cart = cartService.viewCart();
         model.addAttribute("cart", cart);
-        return "cart";
+        return "cart/list";
     }
 
     @PostMapping("/add/{bookId}")

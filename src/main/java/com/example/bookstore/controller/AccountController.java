@@ -1,13 +1,17 @@
 package com.example.bookstore.controller;
 
 import com.example.bookstore.dto.OrderStatusResponseDto;
+import com.example.bookstore.dto.UserDto;
+import com.example.bookstore.dto.UserEditDto;
 import com.example.bookstore.model.User;
 import com.example.bookstore.service.OrderService;
 import com.example.bookstore.service.UserService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -37,5 +41,23 @@ public class AccountController {
     public String deleteAccount() {
         userService.deleteCurrentUser();
         return "redirect:/login?deleted";
+    }
+
+    @GetMapping("/edit")
+    public String editProfile(Model model) {
+        User user = userService.getCurrentUser();
+        UserEditDto dto = new UserEditDto(user.getUsername(), "", user.getEmail());
+        model.addAttribute("userDto", dto);
+        return "account/edit";
+    }
+
+    @PostMapping("/edit")
+    public String updateProfile(@Valid UserEditDto userDto, BindingResult bindingResult) {
+        if (bindingResult.hasErrors()) {
+            return "account/edit";
+        }
+
+        userService.updateCurrentUser(userDto);
+        return "redirect:/account?updated";
     }
 }

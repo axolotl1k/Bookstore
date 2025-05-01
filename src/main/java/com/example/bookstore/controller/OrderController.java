@@ -1,6 +1,7 @@
 package com.example.bookstore.controller;
 
 import com.example.bookstore.dto.OrderDto;
+import com.example.bookstore.dto.OrderResponseDto;
 import com.example.bookstore.dto.OrderStatusResponseDto;
 import com.example.bookstore.dto.CartDto;
 import com.example.bookstore.service.CartService;
@@ -24,20 +25,20 @@ public class OrderController {
     public String checkoutForm(Model model) {
         CartDto cart = cartService.viewCart();
         model.addAttribute("cart", cart);
-        model.addAttribute("orderDto", new OrderDto("", "", "", null));
+        model.addAttribute("order", new OrderDto("", "", "", null));
         return "order/checkout";
     }
 
     @PostMapping("/checkout")
-    public String createOrder(@ModelAttribute("orderDto") OrderDto dto) {
+    public String createOrder(@ModelAttribute("order") OrderDto dto) {
         OrderStatusResponseDto status = orderService.createOrder(dto);
         return "redirect:/order/status/" + status.orderId();
     }
 
     @GetMapping("/status/{orderId}")
     public String orderStatus(@PathVariable Long orderId, Model model) {
-        OrderStatusResponseDto status = orderService.getOrderStatus(orderId);
-        model.addAttribute("status", status);
+        OrderResponseDto status = orderService.getUserOrderDetails(orderId);
+        model.addAttribute("order", status);
         return "order/status";
     }
 

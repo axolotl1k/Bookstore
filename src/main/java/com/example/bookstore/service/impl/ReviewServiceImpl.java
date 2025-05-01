@@ -50,6 +50,7 @@ public class ReviewServiceImpl implements ReviewService {
                 .map(r -> new ReviewDto(
                         r.getBook().getId(),
                         r.getUser().getId(),
+                        r.getUser().getUsername(),
                         r.getRating(),
                         r.getComment()
                 ))

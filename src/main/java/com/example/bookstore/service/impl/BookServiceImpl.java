@@ -2,8 +2,12 @@ package com.example.bookstore.service.impl;
 
 import com.example.bookstore.model.Book;
 import com.example.bookstore.model.Category;
+import com.example.bookstore.model.OrderItem;
+import com.example.bookstore.model.Review;
 import com.example.bookstore.repository.BookRepository;
 import com.example.bookstore.repository.CategoryRepository;
+import com.example.bookstore.repository.OrderItemRepository;
+import com.example.bookstore.repository.ReviewRepository;
 import com.example.bookstore.service.BookService;
 import com.example.bookstore.dto.BookDto;
 import com.example.bookstore.dto.BookFilterDto;
@@ -20,6 +24,8 @@ import java.util.List;
 public class BookServiceImpl implements BookService {
     private final BookRepository bookRepo;
     private final CategoryRepository categoryRepo;
+    private final ReviewRepository reviewRepo;
+    private final OrderItemRepository orderItemRepo;
 
     public List<BookDto> findByFilter(BookFilterDto f) {
         Specification<Book> spec = Specification.where(null);
@@ -105,9 +111,18 @@ public class BookServiceImpl implements BookService {
 
     @Override
     public void delete(Long bookId) {
-        if (!bookRepo.existsById(bookId)) {
-            throw new EntityNotFoundException("Book not found: " + bookId);
+        Book book = bookRepo.findById(bookId)
+                .orElseThrow(() -> new EntityNotFoundException("Книгу не знайдено"));
+
+        List<Review> reviews = reviewRepo.findByBook(book);
+        reviewRepo.deleteAll(reviews);
+
+        List<OrderItem> orderItems = orderItemRepo.findByBook(book);
+        for (OrderItem item : orderItems) {
+            item.setBook(null);
         }
-        bookRepo.deleteById(bookId);
+        orderItemRepo.saveAll(orderItems);
+
+        bookRepo.delete(book);
     }
 }

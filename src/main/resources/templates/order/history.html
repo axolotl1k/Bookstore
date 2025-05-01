@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title>Історія замовлень</title>
+  <link rel="stylesheet" href="/css/bootstrap.min.css" />
+  <link rel="stylesheet" href="/css/style.css" />
+</head>
+<body>
+<div th:insert="~{fragments/navbar :: body}"></div>
+
+<div class="container mt-5" style="max-width: 700px;">
+  <h2 class="mb-4">Історія замовлень</h2>
+
+  <table class="table table-striped table-bordered">
+    <thead class="table-light">
+    <tr>
+      <th>№</th>
+      <th>Статус</th>
+      <th>Дія</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="o : ${orders}">
+      <td th:text="${o.orderId}">0</td>
+      <td th:text="${o.status}">NEW</td>
+      <td>
+        <a th:href="@{/order/status/{id}(id=${o.orderId})}" class="btn btn-sm btn-outline-primary">
+          Переглянути
+        </a>
+      </td>
+    </tr>
+    <tr th:if="${#lists.isEmpty(orders)}">
+      <td colspan="3" class="text-center text-muted">Замовлень ще не було</td>
+    </tr>
+    </tbody>
+  </table>
+</div>
+</body>
+</html>

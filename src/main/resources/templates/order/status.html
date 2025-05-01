@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title>Деталі замовлення</title>
+  <link rel="stylesheet" href="/css/bootstrap.min.css" />
+  <link rel="stylesheet" href="/css/style.css" />
+</head>
+<body>
+<div th:insert="~{fragments/navbar :: body}"></div>
+
+<div class="container mt-5" style="max-width: 700px;">
+  <h2 class="mb-4">Замовлення №<span th:text="${order.orderId}">0</span></h2>
+
+  <p><strong>Статус:</strong> <span th:text="${order.status}">NEW</span></p>
+  <p><strong>Загальна сума:</strong> <span th:text="${order.totalPrice}">0.00</span> грн</p>
+
+  <h4 class="mt-4">Товари</h4>
+  <table class="table table-bordered">
+    <thead class="table-light">
+    <tr>
+      <th>Книга</th>
+      <th>Кількість</th>
+      <th>Ціна</th>
+      <th>Сума</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="item : ${order.items}">
+      <td><a th:href="@{/books/{id}(id=${item.bookId})}" th:text="${item.title}">Назва</a></td>
+      <td th:text="${item.quantity}">1</td>
+      <td th:text="${item.unitPrice}">100.00</td>
+      <td th:text="${item.lineTotal}">100.00</td>
+    </tr>
+    </tbody>
+  </table>
+
+  <a th:href="@{/order/history}" class="btn btn-secondary mt-3">← До історії замовлень</a>
+</div>
+</body>
+</html>
