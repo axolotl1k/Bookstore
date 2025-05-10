@@ -1,7 +1,6 @@
 package com.example.bookstore.notification;
 
 import com.example.bookstore.model.OrderStatus;
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 import org.springframework.context.ApplicationEvent;
 

@@ -26,7 +26,11 @@ public class ReviewController {
             Model model
     ) {
         List<ReviewDto> reviews = reviewService.getReviewsByBookId(bookId);
+        double average = reviewService.getAverageRating(bookId);
+
         model.addAttribute("reviews", reviews);
+        model.addAttribute("averageRating", average);
+
         String me = userService.getCurrentUser().getUsername();
         model.addAttribute("reviewDto", new ReviewDto(bookId, null, me, 0, ""));
         return "reviews/list";
@@ -41,6 +45,7 @@ public class ReviewController {
     ) {
         if (br.hasErrors()) {
             model.addAttribute("reviews", reviewService.getReviewsByBookId(bookId));
+            model.addAttribute("averageRating", reviewService.getAverageRating(bookId));
             return "reviews/list";
         }
         long userId = userService.getCurrentUser().getId();
@@ -55,4 +60,3 @@ public class ReviewController {
         return "redirect:/reviews/book/" + bookId;
     }
 }
-

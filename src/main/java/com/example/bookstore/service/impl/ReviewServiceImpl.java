@@ -60,6 +60,8 @@ public class ReviewServiceImpl implements ReviewService {
     @Override
     public double getAverageRating(Long bookId) {
         List<Review> reviews = reviewRepo.findByBookId(bookId);
+        if (reviews.isEmpty()) return 0.0;
+
         return reviews.stream()
                 .mapToInt(Review::getRating)
                 .average()

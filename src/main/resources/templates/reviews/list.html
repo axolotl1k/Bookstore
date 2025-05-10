@@ -13,6 +13,7 @@
     <h2 class="mb-4">Відгуки до книги</h2>
 
     <div th:if="${!reviews.isEmpty()}">
+        <h5 class="mb-3">Середня оцінка: <span th:text="${#numbers.formatDecimal(averageRating, 1, 1)} + '/5'">0.0</span></h5>
         <div th:each="r : ${reviews}" class="mb-3 border rounded p-3 bg-light">
             <p class="mb-1">
                 <strong th:text="${r.rating} + '/5'"></strong> від користувача <em th:text="${r.username}">user</em>
@@ -24,6 +25,7 @@
     <div th:if="${reviews.isEmpty()}">
         <p class="text-muted">Ще немає відгуків. Будьте першим!</p>
     </div>
+
     <h4 class="mt-4">Додати відгук</h4>
     <form th:action="@{/reviews/book/{bookId}(bookId=${reviewDto.bookId})}"
           th:object="${reviewDto}"
@@ -47,7 +49,6 @@
 
         <button type="submit" class="btn btn-primary">Надіслати</button>
     </form>
-
 </div>
 </body>
 </html>
