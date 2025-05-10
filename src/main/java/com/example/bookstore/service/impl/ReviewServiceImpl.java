@@ -25,10 +25,10 @@ public class ReviewServiceImpl implements ReviewService {
     @Override
     public void addReview(ReviewDto dto) {
         Book book = bookRepo.findById(dto.bookId())
-                .orElseThrow(() -> new EntityNotFoundException("Book not found: " + dto.bookId()));
+                .orElseThrow(() -> new EntityNotFoundException("Книгу не знайдено: " + dto.bookId()));
 
         User user = userRepo.findById(dto.userId())
-                .orElseThrow(() -> new EntityNotFoundException("User not found: " + dto.userId()));
+                .orElseThrow(() -> new EntityNotFoundException("Користувача не знайдено: " + dto.userId()));
 
         Review review = Review.builder()
                 .book(book)

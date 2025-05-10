@@ -48,7 +48,7 @@ public class CartServiceImpl implements CartService {
         Order cart = getOrCreateCartOrder(user);
 
         Book book = bookRepo.findById(bookId)
-                .orElseThrow(() -> new EntityNotFoundException("Book not found: " + bookId));
+                .orElseThrow(() -> new EntityNotFoundException("Книгу не знайдено: " + bookId));
 
         OrderItem item = cart.getItems().stream()
                 .filter(i -> i.getBook().getId().equals(bookId))

@@ -38,7 +38,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public void register(UserDto dto) {
         if (userRepo.existsByUsername(dto.username())) {
-            throw new IllegalArgumentException("Username already taken");
+            throw new IllegalArgumentException("Ім’я користувача вже зайняте");
         }
         var user = new User();
         user.setUsername(dto.username());
@@ -53,24 +53,24 @@ public class UserServiceImpl implements UserService {
 
         if (auth == null || !auth.isAuthenticated()
                 || auth instanceof AnonymousAuthenticationToken) {
-            throw new IllegalStateException("No authenticated user");
+            throw new IllegalStateException("Немає автентифікованого користувача");
         }
 
         if (auth instanceof OAuth2AuthenticationToken oauthToken) {
             OAuth2User oauthUser = oauthToken.getPrincipal();
             String email = oauthUser.getAttribute("email");
             if (email == null) {
-                throw new UsernameNotFoundException("OAuth2 user has no email attribute");
+                throw new UsernameNotFoundException("Користувач OAuth2 не має атрибута електронної пошти");
             }
             return userRepo.findByEmail(email)
                     .orElseThrow(() ->
-                            new UsernameNotFoundException("User with email " + email + " not found"));
+                            new UsernameNotFoundException("Користувача з електронною адресою " + email + " не знайдено"));
         }
 
         String username = auth.getName();
         return userRepo.findByUsername(username)
                 .orElseThrow(() ->
-                        new UsernameNotFoundException("User '" + username + "' not found"));
+                        new UsernameNotFoundException("Користувача '" + username + "' не знайдено"));
     }
 
     @Override
@@ -104,7 +104,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public void updateUserRole(Long userId, Role newRole) {
         User user = userRepo.findById(userId)
-                .orElseThrow(() -> new EntityNotFoundException("User not found: " + userId));
+                .orElseThrow(() -> new EntityNotFoundException("Користувача не знайдено: " + userId));
         user.setRole(newRole);
         userRepo.save(user);
     }

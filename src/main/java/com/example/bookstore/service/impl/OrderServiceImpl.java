@@ -81,7 +81,7 @@ public class OrderServiceImpl implements OrderService {
     @Transactional(readOnly = true)
     public OrderStatusResponseDto getOrderStatus(Long orderId) {
         Order order = orderRepo.findById(orderId)
-                .orElseThrow(() -> new EntityNotFoundException("Order not found: " + orderId));
+                .orElseThrow(() -> new EntityNotFoundException("Замовлення не знайдено: " + orderId));
         return new OrderStatusResponseDto(order.getId(), order.getStatus());
     }
 
@@ -98,7 +98,7 @@ public class OrderServiceImpl implements OrderService {
     @Transactional
     public void updateOrderStatus(Long orderId, OrderStatus newStatus) {
         Order order = orderRepo.findById(orderId)
-                .orElseThrow(() -> new EntityNotFoundException("Order not found: " + orderId));
+                .orElseThrow(() -> new EntityNotFoundException("Замовлення не знайдено: " + orderId));
         order.setStatus(newStatus);
         orderRepo.save(order);
 
@@ -114,7 +114,7 @@ public class OrderServiceImpl implements OrderService {
     @Transactional
     public void deleteOrder(Long orderId) {
         Order order = orderRepo.findById(orderId)
-                .orElseThrow(() -> new EntityNotFoundException("Order not found: " + orderId));
+                .orElseThrow(() -> new EntityNotFoundException("Замовлення не знайдено: " + orderId));
 
         List<OrderItem> orderItems = orderItemRepo.findByOrder(order);
         for (OrderItem item : orderItems) {
@@ -155,7 +155,7 @@ public class OrderServiceImpl implements OrderService {
     @Transactional(readOnly = true)
     public AdminOrderDetailsDto getAdminOrderDetails(Long orderId) {
         Order order = orderRepo.findById(orderId)
-                .orElseThrow(() -> new EntityNotFoundException("Order not found: " + orderId));
+                .orElseThrow(() -> new EntityNotFoundException("Замовлення не знайдено: " + orderId));
 
         List<OrderItemDto> items = order.getItems().stream()
                 .map(i -> new OrderItemDto(
@@ -184,7 +184,7 @@ public class OrderServiceImpl implements OrderService {
     @Transactional(readOnly = true)
     public OrderResponseDto getUserOrderDetails(Long orderId) {
         Order order = orderRepo.findById(orderId)
-                .orElseThrow(() -> new EntityNotFoundException("Order not found"));
+                .orElseThrow(() -> new EntityNotFoundException("Замовлення не знайдено: " + orderId));
         return mapToResponseDto(order);
     }
 }

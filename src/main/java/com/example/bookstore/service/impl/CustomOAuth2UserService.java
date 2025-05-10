@@ -85,6 +85,6 @@ public class CustomOAuth2UserService implements OAuth2UserService<OAuth2UserRequ
                 .map(m -> (String) m.get("email"))
                 .findFirst()
                 .orElseThrow(() ->
-                        new OAuth2AuthenticationException("No primary email from GitHub"));
+                        new OAuth2AuthenticationException("Не отримано основної електронної адреси з GitHub"));
     }
 }

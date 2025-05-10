@@ -53,7 +53,7 @@ public class BookServiceImpl implements BookService {
     @Override
     public BookDto findById(Long bookId) {
         Book b = bookRepo.findById(bookId)
-                .orElseThrow(() -> new EntityNotFoundException("Book not found"));
+                .orElseThrow(() -> new EntityNotFoundException("Книгу не знайдено: " + bookId));
         return toDto(b);
     }
 
@@ -73,7 +73,7 @@ public class BookServiceImpl implements BookService {
     public BookDto create(BookDto dto) {
         String categoryName = dto.category();
         Category cat = categoryRepo.findByName(categoryName)
-                .orElseThrow(() -> new EntityNotFoundException("Category not found: " + dto.category()));
+                .orElseThrow(() -> new EntityNotFoundException("Категорія не знайдена: " + dto.category()));
 
         Book b = Book.builder()
                 .title(dto.title())
@@ -91,11 +91,11 @@ public class BookServiceImpl implements BookService {
     @Override
     public BookDto update(Long bookId, BookDto dto) {
         Book b = bookRepo.findById(bookId)
-                .orElseThrow(() -> new EntityNotFoundException("Book not found: " + bookId));
+                .orElseThrow(() -> new EntityNotFoundException("Книгу не знайдено: " + bookId));
 
         if (!b.getCategory().getName().equals(dto.category())) {
             Category cat = categoryRepo.findByName(dto.category())
-                    .orElseThrow(() -> new EntityNotFoundException("Category not found: " + dto.category()));
+                    .orElseThrow(() -> new EntityNotFoundException("Категорія не знайдена: " + dto.category()));
             b.setCategory(cat);
         }
 
