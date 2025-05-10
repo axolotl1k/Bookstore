@@ -43,7 +43,6 @@ class UserServiceImplTest {
         var dto = new UserDto("testuser", "test@example.com", "password");
         userService.register(dto);
 
-        // Установка автентифікації через username, не User
         var auth = new TestingAuthenticationToken("testuser", null, "ROLE_USER");
         SecurityContextHolder.getContext().setAuthentication(auth);
     }
